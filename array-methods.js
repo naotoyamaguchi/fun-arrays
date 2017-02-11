@@ -1,4 +1,5 @@
 var dataset = require('./dataset.json');
+var bankBalances = dataset.bankBalances;
 
 /*
   create an array with accounts from bankBalances that are
@@ -6,6 +7,10 @@ var dataset = require('./dataset.json');
   assign the resulting array to `hundredThousandairs`
 */
 var hundredThousandairs = null;
+
+hundredThousandairs = bankBalances.filter(function(element, index, array){
+  return element.amount > 100000;
+});
 
 /*
   set a new key for each object in bankBalances named `rounded`
@@ -20,6 +25,11 @@ var hundredThousandairs = null;
 */
 var roundedDollar = null;
 
+roundedDollar = bankBalances.map(function(elem, index, arr){
+  elem.rounded = Math.round(elem.amount);
+  return elem;
+});
+
 /*
   set a the `amount` value for each object in bankBalances
   to the value of `amount` rounded to the nearest 10 cents
@@ -32,8 +42,26 @@ var roundedDollar = null;
 */
 var roundedDime = null;
 
+roundedDime = bankBalances.map(function (elem, index, arr) {
+  let result = {};
+  result.amount = (Math.round(elem.amount*10))/10;
+  result.state = elem.state;
+  return result;
+});
+
 // set sumOfBankBalances to the sum of all amounts in bankBalances
 var sumOfBankBalances = null;
+
+function sum(a, b){
+  return a + b;
+}
+
+sumOfBankBalances = bankBalances.map(function(elem,index,arr){
+  return parseFloat(elem.amount);
+})
+.reduce(sum);
+
+sumOfBankBalances = parseInt(sumOfBankBalances*100)/100;
 
 /*
   set sumOfInterests to the sum of the 18.9% interest
@@ -48,6 +76,15 @@ var sumOfBankBalances = null;
   the result should be rounded to the nearest cent
  */
 var sumOfInterests = null;
+
+sumOfInterests = bankBalances.filter(function (elem, index, arr) {
+  return elem.state === 'WI'|| elem.state === 'IL'|| elem.state === 'WY'|| elem.state === 'OH'|| elem.state === 'GA'|| elem.state === 'DE';
+})
+.map(function (elem, index, arr){
+  return Math.round(parseFloat(elem.amount)*.189*100);
+})
+.reduce(sum)/100;
+
 
 /*
   set sumOfHighInterests to the sum of the 18.9% interest
@@ -64,6 +101,17 @@ var sumOfInterests = null;
   the result should be rounded to the nearest cent
  */
 var sumOfHighInterests = null;
+
+sumOfHighInterests = bankBalances.filter(function (elem, index, arr) {
+  return elem.state !== 'WI'&& elem.state !== 'IL'&& elem.state !== 'WY'&& elem.state !== 'OH'&& elem.state !== 'GA'&& elem.state !== 'DE'
+})
+.filter( function (elem, index, arr) {
+  return elem.amount > 50000;
+})
+.map(function (elem, index , arr) {
+  return parseFloat(elem.amount)*100*.189;
+})
+.reduce(sum)/100;
 
 /*
   aggregate the sum of bankBalance amounts
